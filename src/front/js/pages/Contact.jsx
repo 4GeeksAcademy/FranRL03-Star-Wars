@@ -14,22 +14,22 @@ export const Contact = () => {
     const uri = 'https://playground.4geeks.com/contact/agendas'
     const user = 'fran'
 
-    const getContacts = async () => {
-        const response = await fetch(`${uri}/${user}`, 
-            {
-                method: 'GET'
-            }
-        )
+    // const getContacts = async () => {
+    //     const response = await fetch(`${uri}/${user}`, 
+    //         {
+    //             method: 'GET'
+    //         }
+    //     )
 
-        if(!response.ok) {
-            console.log('Error: ', response.status, response.statusText)
-        }
+    //     if(!response.ok) {
+    //         console.log('Error: ', response.status, response.statusText)
+    //     }
 
-        const data = await response.json()
-        setContactList(data.contacts)
-    }
+    //     const data = await response.json()
+    //     setContactList(data.contacts)
+    // }
 
-    useEffect(() => {getContacts()}, [])
+    // useEffect(() => {getContacts()}, [])
 
     return (
         <div className="container">
