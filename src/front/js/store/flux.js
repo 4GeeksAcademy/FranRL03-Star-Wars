@@ -14,7 +14,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					initial: "white"
 				}
 			],
-			contactList: []
+			contactList: [],
+			currentContact: {}
 		},
 		actions: {
 			getContact: async () => {
@@ -34,6 +35,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({contactList: data})
 
 			},
+			setCurrentContact: (contact) => {setStore({currentContact: contact})},
 			// Use getActions to call a function within a fuction
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
