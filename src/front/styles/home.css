@@ -6,8 +6,19 @@
     on that page only (the ones not reused in other pages).
 */
 
-.buttons {
+.contact-buttons{
     width: 50px;
     height: 50px;
-    padding: 0;
+    margin-left: -35px;
+    /* transition: margin-left 0.5s ease */
+}
+
+.contact-item:hover .contact-card{
+    transform: scale(1.05); 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.contact-item:hover .contact-buttons {
+    transform: scale(1.00); 
+    margin-left: 10px;
 }
