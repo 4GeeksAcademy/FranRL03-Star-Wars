@@ -13,8 +13,6 @@ export const Contact = () => {
         navigate('/edit-contact')
     }
 
-    useEffect(() => { actions.getContact() }, [])
-
     return (
         <div className="container">
 

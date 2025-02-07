@@ -15,7 +15,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			],
 			contactList: [],
-			currentContact: {}
+			currentContact: {},
+			principalContact:
+			{
+				"name": "User 1",
+				"phone": "12345678",
+				"email": "user@gmail.com",
+				"address": "Seville, Spain"
+			}
 		},
 		actions: {
 			getContact: async () => {
@@ -26,16 +33,55 @@ const getState = ({ getStore, getActions, setStore }) => {
 				)
 
 				if (!response.ok) {
+					if (response.status == 404) {
+						getActions().createAgenda()
+					} else {
+						console.log('No se encontro el contacto')
+					}
+				}
+
+				const data = await response.json();
+				if(data.contacts.length == 0) {
+					setStore({currentContact: getStore().principalContact})
+					console.log('get contact con 0', data)
+					// getActions().createContact()
+				} else {
+					console.log('get contact sin nada',data)
+					setStore({ contactList: data })
+				}
+			},
+			setCurrentContact: (contact) => { setStore({ currentContact: contact }) },
+			createAgenda: async () => {
+				const response = await fetch('https://playground.4geeks.com/contact/agendas/fran',
+					{
+						method: 'POST'
+					}
+				)
+
+				if (!response.ok) {
+
 					console.log('Error: ', response.status, response.statusText)
 					return;
 				}
 
-				const data = await response.json();
-				console.log(data)
-				setStore({contactList: data})
-
+				setStore({currentContact: getStore().principalContact})
+				getActions().createContact()
 			},
-			setCurrentContact: (contact) => {setStore({currentContact: contact})},
+			createContact: async () => {
+				const response = await fetch('https://playground.4geeks.com/contact/agendas/fran', 
+					{
+						method: 'POST', 
+						body: JSON.stringify(getStore().currentContact),
+						headers: {'Content-type': 'application/json'}
+					}
+				)
+
+				if (!response.ok) {
+					console.log('Error creating contact')
+				}
+
+				getActions().getContact()
+			},
 			// Use getActions to call a function within a fuction
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
