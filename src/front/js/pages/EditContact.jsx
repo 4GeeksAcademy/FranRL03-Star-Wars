@@ -1,14 +1,30 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
+import { useNavigate } from "react-router-dom";
 
 export const EditContact = () => {
 
-    const { store } = useContext(Context);
+    const { store, actions } = useContext(Context);
     const contact = store.currentContact;
     const [ name, setName ] = useState(contact.name);
     const [ email, setEmail ] = useState(contact.email);
     const [ address, setAddress ] = useState(contact.address);
     const [ phone, setPhone ] = useState(contact.phone);
+    const navigate = useNavigate();
+    
+
+    const handleEdit  = () => {        
+        const updatedContact = {
+            id: contact.id,
+            name,
+            email,
+            address,
+            phone
+        };
+
+        actions.editContact(updatedContact);
+        navigate('/contact')
+    };
 
     return (
         <div className="container">
@@ -34,7 +50,7 @@ export const EditContact = () => {
                     <input type="text" className="form-control" id="inputPassword2"
                     value={phone} onChange={(event) => setPhone(event.target.value)}/>
                 </div>
-                <button type="submit" className="btn btn-primary">Submit</button>
+                <button type="submit" onClick={handleEdit} className="btn btn-primary">Submit</button>
             </form>
         </div>
     )

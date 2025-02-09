@@ -2,18 +2,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			],
 			contactList: [],
 			currentContact: {},
 			principalContact:
@@ -26,7 +14,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 		},
 		actions: {
 			getContact: async () => {
-				const response = await fetch('https://playground.4geeks.com/contact/agendas/fran',
+				const response = await fetch(`${process.env.BASE_URL}/fran`,
 					{
 						method: 'GET'
 					}
@@ -34,6 +22,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				if (!response.ok) {
 					if (response.status == 404) {
+						console.log('Creating agenda...')
 						getActions().createAgenda()
 					} else {
 						console.log('No se encontro el contacto')
@@ -41,18 +30,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 				const data = await response.json();
-				if(data.contacts.length == 0) {
-					setStore({currentContact: getStore().principalContact})
-					console.log('get contact con 0', data)
-					// getActions().createContact()
+				if (data.contacts.length === 0) {
+					console.log('There are no contacts')
 				} else {
-					console.log('get contact sin nada',data)
+					console.log('Creating contact...', data)
 					setStore({ contactList: data })
 				}
 			},
 			setCurrentContact: (contact) => { setStore({ currentContact: contact }) },
 			createAgenda: async () => {
-				const response = await fetch('https://playground.4geeks.com/contact/agendas/fran',
+				const response = await fetch(`${process.env.BASE_URL}/fran`,
 					{
 						method: 'POST'
 					}
@@ -64,15 +51,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return;
 				}
 
-				setStore({currentContact: getStore().principalContact})
+				setStore({ currentContact: getStore().principalContact })
 				getActions().createContact()
 			},
 			createContact: async () => {
-				const response = await fetch('https://playground.4geeks.com/contact/agendas/fran', 
+				const response = await fetch(`${process.env.BASE_URL}/fran/contacts`,
 					{
-						method: 'POST', 
+						method: 'POST',
 						body: JSON.stringify(getStore().currentContact),
-						headers: {'Content-type': 'application/json'}
+						headers: { 'Content-type': 'application/json' },
 					}
 				)
 
@@ -80,6 +67,41 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log('Error creating contact')
 				}
 
+				getActions().getContact()
+			},
+			editContact: async (updateContact) => {
+				const response = await fetch(`${process.env.BASE_URL}/fran/contacts/${updateContact.id}`,
+					{
+						method: 'PUT',
+						headers: { 'Content-type': 'application/json' },
+						body: JSON.stringify(updateContact),
+					}
+				)
+
+				if (!response.ok) {
+					console.log('Error edit contact', response.status, response.statusText);
+
+				}
+
+				console.log('Contact edit ', updateContact)
+				getActions().getContact()
+
+			},
+			deleteContact: async (contact) => {
+				const response = await fetch(`${process.env.BASE_URL}/fran/contacts/${contact.id}`,
+					{
+						method: 'DELETE'
+					}
+				)
+
+				if(!response.ok) {
+					console.log('Error to delete contact', response.status, response.statusText);
+					
+				}
+				
+				window.location.reload()
+
+				console.log('Deleted contact with id: ', contact.id);
 				getActions().getContact()
 			},
 			// Use getActions to call a function within a fuction
