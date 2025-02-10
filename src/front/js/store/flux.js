@@ -12,6 +12,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				"address": "Seville, Spain"
 			},
 			characterList: [],
+			favorites: [],
 		},
 		actions: {
 			getContact: async () => {
@@ -120,6 +121,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const data = await response.json()
 				console.log(data.results)
 				setStore({ characterList: data.results })
+			},
+			addFavorites: (item) => {
+				const store = getStore();
+
+				if(!store.favorites.some(fav => fav.name === item.name))
+					setStore({ favorites: [...store.favorites, item] });
+				else
+				console.log('This element is already in the list');
+			},
+			removeFavorites: (item) => {
+				const store = getStore();
+				console.log('Deleted');
+				setStore({ favorites: store.favorites.filter(favorite => favorite.name !== item.name)})
 			},
 			// Use getActions to call a function within a fuction
 			exampleFunction: () => {
