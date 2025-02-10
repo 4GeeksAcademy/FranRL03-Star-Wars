@@ -30,7 +30,7 @@ export const Contact = () => {
     return (
         <div className="container">
 
-            <h1 className="text-center">CONTACT LIST</h1>
+            <h1 className="text-center mt-5">CONTACT LIST</h1>
 
             <ul className="list-group list-group-flush mt-5">
                 {
@@ -41,7 +41,7 @@ export const Contact = () => {
                         :
 
                         store.contactList.contacts.map((iterator) => (
-                            <li key={iterator.id} className="list-group-item d-flex contact-item" style={{ width: "600px" }}>
+                            <li key={iterator.id} className="list-group-item d-flex contact-item" style={{ width: "600px"}}>
 
                                 <div className="card mb-3 contact-card" style={{ width: "540px" }}>
                                     <div className="row g-0">

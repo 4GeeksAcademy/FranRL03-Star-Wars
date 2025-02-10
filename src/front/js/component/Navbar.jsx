@@ -7,13 +7,13 @@ export const Navbar = () => {
 	const { store, actions } = useContext(Context);
 
 	return (
-		<nav className="navbar navbar-expand-lg bg-body-ternary">
+		<nav className="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
 			<div className="container-fluid ms-5">
 				<Link className="navbar-brand" to="/">Home</Link>
 				<div className="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul className="navbar-nav me-auto mb-2 mb-lg-0">
 						<li className="nav-item">
-							<Link className="nav-link active" aria-current="page" to="/contact">Contact</Link>
+							<Link className="nav-link" aria-current="page" to="/contact">Contact</Link>
 						</li>
 						<li className="nav-item">
 							<Link className="nav-link" to="/people">Characters</Link>
@@ -21,7 +21,7 @@ export const Navbar = () => {
 					</ul>
 				</div>
 				<div className="btn-group me-5">
-					<button type="button" className="btn btn-warning dropdown-toggle me-2" data-bs-toggle="dropdown" aria-expanded="false">
+					<button type="button" className="btn btn-warning dropdown-toggle me-2 text-secondary rounded-4" data-bs-toggle="dropdown" aria-expanded="false">
 						Favorites
 						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 							{store.favorites.length}
