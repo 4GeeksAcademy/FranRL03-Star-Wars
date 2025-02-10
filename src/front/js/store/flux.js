@@ -10,7 +10,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				"phone": "12345678",
 				"email": "user@gmail.com",
 				"address": "Seville, Spain"
-			}
+			},
+			characterList: [],
 		},
 		actions: {
 			getContact: async () => {
@@ -103,6 +104,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				console.log('Deleted contact with id: ', contact.id);
 				getActions().getContact()
+			},
+			getCharacters: async () => {
+				const response = await fetch(`${process.env.API_URL}/people`, 
+					{
+						method: 'GET'
+					}
+				)
+
+				if(!response.ok) {
+					console.log('Error', response.status, response.statusText);
+					return;
+				}
+
+				const data = await response.json()
+				console.log(data.results)
+				setStore({ characterList: data.results })
 			},
 			// Use getActions to call a function within a fuction
 			exampleFunction: () => {

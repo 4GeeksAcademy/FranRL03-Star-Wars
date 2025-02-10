@@ -12,7 +12,7 @@ export const Navbar = () => {
 							<Link className="nav-link active" aria-current="page" to="/contact">Contact</Link>
 						</li>
 						<li className="nav-item">
-							<Link className="nav-link" to="#">Link</Link>
+							<Link className="nav-link" to="/people">Characters</Link>
 						</li>
 					</ul>
 				</div>
