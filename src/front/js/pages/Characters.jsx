@@ -7,7 +7,6 @@ export const Characters = () => {
 
     const { store, actions } = useContext(Context);
 
-
     return (
         <div className="container mt-5">
             <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
@@ -19,11 +18,11 @@ export const Characters = () => {
                                     className="card-img-top" alt={iterator.name} onError={(e) => e.target.src = "https://i.blogs.es/f6cd66/starwars7/650_1200.jpg"} />
                                 <div className="card-body">
                                     <h5 className="card-title">{iterator.name}</h5>
-                                    <p className="card-text">
+                                    {/* <p className="card-text">
                                         
-                                    </p>
+                                    </p> */}
                                     <div className="d-flex justify-content-between">
-                                        <Link to="#" className="btn btn-dark rounded-4">Description</Link>
+                                        <Link to={`/people/${iterator.uid}`} onClick={() => actions.getDetailsCharacter(iterator.url)} className="btn btn-dark rounded-4">Description</Link>
                                         <button type="button" onClick={() => {store.favorites.some(fav => fav.name === iterator.name) ? actions.removeFavorites(iterator) : actions.addFavorites(iterator)}}
                                             className={`btn rounded-4 ${store.favorites.some(fav => fav.name === iterator.name)  ? 'btn-danger' : 'btn-outline-warning'} `}>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill={`${store.favorites.some(fav => fav.name === iterator.name)  ? 'white' : 'yellow'}`} className="bi bi-heart" viewBox="0 0 16 16">

@@ -12,6 +12,8 @@ import { Single } from "./pages/Single.jsx";
 import { Contact } from "./pages/Contact.jsx";
 import { EditContact } from "./pages/EditContact.jsx";
 import { Characters } from "./pages/Characters.jsx";
+import { CharacterDetails } from "./pages/CharacterDetails.jsx";
+
 
 
 
@@ -33,6 +35,7 @@ const Layout = () => {
                         <Route element={<Contact />} path="/contact" />
                         <Route element={<EditContact />} path="/edit-contact" />
                         <Route element={<Characters />} path="/people" />
+                        <Route element={<CharacterDetails />} path="/people/:id" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<h1>Not found!</h1>} path="*"/>
                     </Routes>

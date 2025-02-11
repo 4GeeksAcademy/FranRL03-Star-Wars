@@ -13,6 +13,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			characterList: [],
 			favorites: [],
+			currentCharacter: {}
 		},
 		actions: {
 			getContact: async () => {
@@ -134,6 +135,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const store = getStore();
 				console.log('Deleted');
 				setStore({ favorites: store.favorites.filter(favorite => favorite.name !== item.name)})
+			},
+			getDetailsCharacter: async (url) => {
+				const response = await fetch(url, 
+					{
+						method: 'GET'
+					}
+				)
+
+				if(!response.ok){
+					console.log('Dont found deails', response.status, response.statusText);
+				}
+
+				const data = await response.json()
+				setStore({ currentCharacter: data.result.properties })
+				
 			},
 			// Use getActions to call a function within a fuction
 			exampleFunction: () => {

@@ -23,7 +23,7 @@ export const Navbar = () => {
 				<div className="btn-group me-5">
 					<button type="button" className="btn btn-warning dropdown-toggle me-2 text-secondary rounded-4" data-bs-toggle="dropdown" aria-expanded="false">
 						Favorites
-						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+						<span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 							{store.favorites.length}
 						</span>
 					</button>
