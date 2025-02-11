@@ -10,7 +10,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 				"phone": "12345678",
 				"email": "user@gmail.com",
 				"address": "Seville, Spain"
-			}
+			},
+			characterList: [],
+			favorites: [],
+			currentCharacter: {}
 		},
 		actions: {
 			getContact: async () => {
@@ -103,6 +106,50 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				console.log('Deleted contact with id: ', contact.id);
 				getActions().getContact()
+			},
+			getCharacters: async () => {
+				const response = await fetch(`${process.env.API_URL}/people`, 
+					{
+						method: 'GET'
+					}
+				)
+
+				if(!response.ok) {
+					console.log('Error', response.status, response.statusText);
+					return;
+				}
+
+				const data = await response.json()
+				console.log(data.results)
+				setStore({ characterList: data.results })
+			},
+			addFavorites: (item) => {
+				const store = getStore();
+
+				if(!store.favorites.some(fav => fav.name === item.name))
+					setStore({ favorites: [...store.favorites, item] });
+				else
+				console.log('This element is already in the list');
+			},
+			removeFavorites: (item) => {
+				const store = getStore();
+				console.log('Deleted');
+				setStore({ favorites: store.favorites.filter(favorite => favorite.name !== item.name)})
+			},
+			getDetailsCharacter: async (url) => {
+				const response = await fetch(url, 
+					{
+						method: 'GET'
+					}
+				)
+
+				if(!response.ok){
+					console.log('Dont found deails', response.status, response.statusText);
+				}
+
+				const data = await response.json()
+				setStore({ currentCharacter: data.result.properties })
+				
 			},
 			// Use getActions to call a function within a fuction
 			exampleFunction: () => {
