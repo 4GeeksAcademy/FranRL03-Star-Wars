@@ -18,9 +18,6 @@ export const Characters = () => {
                                     className="card-img-top" alt={iterator.name} onError={(e) => e.target.src = "https://i.blogs.es/f6cd66/starwars7/650_1200.jpg"} />
                                 <div className="card-body">
                                     <h5 className="card-title">{iterator.name}</h5>
-                                    {/* <p className="card-text">
-                                        
-                                    </p> */}
                                     <div className="d-flex justify-content-between">
                                         <Link to={`/people/${iterator.uid}`} onClick={() => actions.getDetailsCharacter(iterator.url)} className="btn btn-dark rounded-4">Description</Link>
                                         <button type="button" onClick={() => {store.favorites.some(fav => fav.name === iterator.name) ? actions.removeFavorites(iterator) : actions.addFavorites(iterator)}}

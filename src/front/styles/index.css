@@ -5,3 +5,10 @@
 .list-group {
     --bs-list-group-bg: #4e5d6c00;
 }
+
+.carousel-image {
+    width: 100%; /* Ocupa todo el ancho del contenedor */
+    height: 500px; /* Ajusta la altura como prefieras */
+    object-fit: cover; /* Asegura que la imagen se recorte proporcionalmente sin distorsión */
+    border-radius: 10px; /* Opcional: agrega bordes redondeados */
+  }
