@@ -1,6 +1,7 @@
 import React, { useActionState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
+import logoStarWars from "../../img/logoStarWars.png";
 
 export const Navbar = () => {
 
@@ -9,6 +10,9 @@ export const Navbar = () => {
 	return (
 		<nav className="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
 			<div className="container-fluid ms-5">
+				<a class="navbar-brand">
+					<img src={logoStarWars} alt="Bootstrap" width="100" height="40" />
+				</a>
 				<Link className="navbar-brand" to="/">Home</Link>
 				<div className="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul className="navbar-nav me-auto mb-2 mb-lg-0">
