@@ -3,7 +3,7 @@ import { Context } from "../store/appContext";
 import { Link } from "react-router-dom";
 
 
-export const Characters = () => {
+export const Starships = () => {
 
     const { store, actions } = useContext(Context);
 
@@ -11,15 +11,15 @@ export const Characters = () => {
         <div className="container mt-5">
             <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
                 {
-                    store.characterList.map((iterator) => (
+                    store.starshipsList.map((iterator) => (
                         <div className="col" key={iterator.uid}>
                             <div className="card h-100" style={{ width: "18rem" }}>
-                                <img src={`https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/characters/${iterator.uid}.jpg`}
+                                <img src={`https://raw.githubusercontent.com/tbone849/star-wars-guide/refs/heads/master/build/assets/img/starships/${iterator.uid}.jpg`}
                                     className="card-img-top" alt={iterator.name} onError={(e) => e.target.src = "https://i.blogs.es/f6cd66/starwars7/650_1200.jpg"} />
                                 <div className="card-body">
                                     <h5 className="card-title">{iterator.name}</h5>
                                     <div className="d-flex justify-content-between">
-                                        <Link to={`/people/${iterator.uid}`} onClick={() => actions.getDetailsCharacter(iterator.url, iterator.uid)} className="btn btn-dark rounded-4">Description</Link>
+                                        <Link to={`/starship/${iterator.uid}`} onClick={() => actions.getDetailsStarship(iterator.url, iterator.uid)} className="btn btn-dark rounded-4">Description</Link>
                                         <button type="button" onClick={() => {store.favorites.some(fav => fav.name === iterator.name) ? actions.removeFavorites(iterator) : actions.addFavorites(iterator)}}
                                             className={`btn rounded-4 ${store.favorites.some(fav => fav.name === iterator.name)  ? 'btn-danger' : 'btn-outline-warning'} `}>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill={`${store.favorites.some(fav => fav.name === iterator.name)  ? 'white' : 'yellow'}`} className="bi bi-heart" viewBox="0 0 16 16">

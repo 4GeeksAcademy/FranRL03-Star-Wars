@@ -1,14 +1,28 @@
-import React, { useActionState, useContext } from "react";
+import React, { useActionState, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
+import logoStarWars from "../../img/logoStarWars.png";
 
 export const Navbar = () => {
 
 	const { store, actions } = useContext(Context);
+	const [ isDarkTheme, setIsDarkTheme] = useState(true);
+
+	const handleThemeChange = () => {
+		const theme = isDarkTheme ? 'flatly' : 'superhero';
+		setIsDarkTheme(!isDarkTheme)
+		actions.setTheme(theme)
+
+		const themeStylesheet = document.getElementById("theme-stylesheet");
+        themeStylesheet.href = `https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/${theme}/bootstrap.min.css`;
+	}
 
 	return (
 		<nav className="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
 			<div className="container-fluid ms-5">
+				<a class="navbar-brand">
+					<img src={logoStarWars} alt="Bootstrap" width="100" height="40" />
+				</a>
 				<Link className="navbar-brand" to="/">Home</Link>
 				<div className="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul className="navbar-nav me-auto mb-2 mb-lg-0">
@@ -18,10 +32,24 @@ export const Navbar = () => {
 						<li className="nav-item">
 							<Link className="nav-link" to="/people">Characters</Link>
 						</li>
+						<li className="nav-item">
+							<Link className="nav-link" to="/planet">Planets</Link>
+						</li>
+						<li className="nav-item">
+							<Link className="nav-link" to="/starship">Starships</Link>
+						</li>
 					</ul>
 				</div>
+				<div className="me-3">
+                    <button 
+                        className="btn btn-outline-light border-0" 
+                        onClick={(handleThemeChange)}
+						>
+                        <i className={`fa ${isDarkTheme ? "fa-sun" : "fa-moon"}`}></i>
+                    </button>
+                </div>
 				<div className="btn-group me-5">
-					<button type="button" className="btn btn-warning dropdown-toggle me-2 text-secondary rounded-4" data-bs-toggle="dropdown" aria-expanded="false">
+					<button type="button" className={`btn btn-warning dropdown-toggle me-2 ${isDarkTheme ? 'text-secondary' : 'text-light'} rounded-4`} data-bs-toggle="dropdown" aria-expanded="false">
 						Favorites
 						<span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 							{store.favorites.length}
