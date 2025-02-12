@@ -30,6 +30,8 @@ const injectContext = PassedComponent => {
 			 **/
 			state.actions.getContact()
 			state.actions.getCharacters()
+			const themeStylesheet = document.getElementById("theme-stylesheet");
+			themeStylesheet.href = `https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/${state.store.theme}/bootstrap.min.css`;
 			// state.actions.getMessage(); // <---- calling this function from the flux.js actions
 		}, []);
 

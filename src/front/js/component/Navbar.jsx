@@ -1,4 +1,4 @@
-import React, { useActionState, useContext } from "react";
+import React, { useActionState, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
 import logoStarWars from "../../img/logoStarWars.png";
@@ -6,6 +6,16 @@ import logoStarWars from "../../img/logoStarWars.png";
 export const Navbar = () => {
 
 	const { store, actions } = useContext(Context);
+	const [ isDarkTheme, setIsDarkTheme] = useState(true);
+
+	const handleThemeChange = () => {
+		const theme = isDarkTheme ? 'flatly' : 'superhero';
+		setIsDarkTheme(!isDarkTheme)
+		actions.setTheme(theme)
+
+		const themeStylesheet = document.getElementById("theme-stylesheet");
+        themeStylesheet.href = `https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/${theme}/bootstrap.min.css`;
+	}
 
 	return (
 		<nav className="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
@@ -24,8 +34,17 @@ export const Navbar = () => {
 						</li>
 					</ul>
 				</div>
+				<div className="me-3">
+                    {/* Botón para cambiar el tema */}
+                    <button 
+                        className="btn btn-outline-light border-0" 
+                        onClick={(handleThemeChange)}
+						>
+                        <i className={`fa ${isDarkTheme ? "fa-sun" : "fa-moon"}`}></i>
+                    </button>
+                </div>
 				<div className="btn-group me-5">
-					<button type="button" className="btn btn-warning dropdown-toggle me-2 text-secondary rounded-4" data-bs-toggle="dropdown" aria-expanded="false">
+					<button type="button" className={`btn btn-warning dropdown-toggle me-2 ${isDarkTheme ? 'text-secondary' : 'text-light'} rounded-4`} data-bs-toggle="dropdown" aria-expanded="false">
 						Favorites
 						<span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 							{store.favorites.length}

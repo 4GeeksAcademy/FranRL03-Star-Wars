@@ -13,9 +13,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			characterList: [],
 			favorites: [],
-			currentCharacter: {}
+			currentCharacter: {},
+			theme: "superhero"
 		},
 		actions: {
+			setTheme: (themeName) => {setStore({ theme: themeName })},
 			getContact: async () => {
 				const response = await fetch(`${process.env.BASE_URL}/fran`,
 					{
