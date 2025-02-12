@@ -13,6 +13,10 @@ import { Contact } from "./pages/Contact.jsx";
 import { EditContact } from "./pages/EditContact.jsx";
 import { Characters } from "./pages/Characters.jsx";
 import { CharacterDetails } from "./pages/CharacterDetails.jsx";
+import { Planets } from "./pages/Planets.jsx";
+import { PlanetDetails } from "./pages/PlanetDetails.jsx";
+import { Starships } from "./pages/Starships.jsx";
+import { StarshipDetails } from "./pages/StarshipDetails.jsx";
 
 
 
@@ -36,7 +40,10 @@ const Layout = () => {
                         <Route element={<EditContact />} path="/edit-contact" />
                         <Route element={<Characters />} path="/people" />
                         <Route element={<CharacterDetails />} path="/people/:id" />
-                        <Route element={<Single />} path="/single/:theid" />
+                        <Route element={<Planets />} path="/planet" />
+                        <Route element={<PlanetDetails />} path="/planet/:id" />
+                        <Route element={<Starships />} path="/starship" />
+                        <Route element={<StarshipDetails />} path="/starship/:id" />
                         <Route element={<h1>Not found!</h1>} path="*"/>
                     </Routes>
                     <Footer />

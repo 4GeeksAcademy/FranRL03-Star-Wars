@@ -32,10 +32,15 @@ export const Navbar = () => {
 						<li className="nav-item">
 							<Link className="nav-link" to="/people">Characters</Link>
 						</li>
+						<li className="nav-item">
+							<Link className="nav-link" to="/planet">Planets</Link>
+						</li>
+						<li className="nav-item">
+							<Link className="nav-link" to="/starship">Starships</Link>
+						</li>
 					</ul>
 				</div>
 				<div className="me-3">
-                    {/* Botón para cambiar el tema */}
                     <button 
                         className="btn btn-outline-light border-0" 
                         onClick={(handleThemeChange)}

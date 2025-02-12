@@ -14,10 +14,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 			characterList: [],
 			favorites: [],
 			currentCharacter: {},
+			planetList: [],
+			currentPlanet: {},
+			starshipsList: [],
+			currentStarship: {},
 			theme: "superhero"
 		},
 		actions: {
-			setTheme: (themeName) => {setStore({ theme: themeName })},
+			setTheme: (themeName) => { setStore({ theme: themeName }) },
 			getContact: async () => {
 				const response = await fetch(`${process.env.BASE_URL}/fran`,
 					{
@@ -99,24 +103,24 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				)
 
-				if(!response.ok) {
+				if (!response.ok) {
 					console.log('Error to delete contact', response.status, response.statusText);
-					
+
 				}
-				
+
 				window.location.reload()
 
 				console.log('Deleted contact with id: ', contact.id);
 				getActions().getContact()
 			},
 			getCharacters: async () => {
-				const response = await fetch(`${process.env.API_URL}/people`, 
+				const response = await fetch(`${process.env.API_URL}/people`,
 					{
 						method: 'GET'
 					}
 				)
 
-				if(!response.ok) {
+				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
 					return;
 				}
@@ -128,63 +132,96 @@ const getState = ({ getStore, getActions, setStore }) => {
 			addFavorites: (item) => {
 				const store = getStore();
 
-				if(!store.favorites.some(fav => fav.name === item.name))
+				if (!store.favorites.some(fav => fav.name === item.name))
 					setStore({ favorites: [...store.favorites, item] });
 				else
-				console.log('This element is already in the list');
+					console.log('This element is already in the list');
 			},
 			removeFavorites: (item) => {
 				const store = getStore();
 				console.log('Deleted');
-				setStore({ favorites: store.favorites.filter(favorite => favorite.name !== item.name)})
+				setStore({ favorites: store.favorites.filter(favorite => favorite.name !== item.name) })
 			},
-			getDetailsCharacter: async (url) => {
-				const response = await fetch(url, 
+			getDetailsCharacter: async (url, uid) => {
+				const response = await fetch(url,
 					{
 						method: 'GET'
 					}
 				)
 
-				if(!response.ok){
+				if (!response.ok) {
 					console.log('Dont found deails', response.status, response.statusText);
 				}
 
 				const data = await response.json()
-				setStore({ currentCharacter: data.result.properties })
-				
+				setStore({ currentCharacter: {...data.result.properties, uid} })
+
 			},
 			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-			getMessage: async () => {
-				try {
-					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
-					const data = await resp.json()
-					setStore({ message: data.message })
-					// don't forget to return something, that is how the async resolves
-					return data;
-				} catch (error) {
-					console.log("Error loading message from backend", error)
+			getPlanets: async () => {
+				const response = await fetch(`${process.env.API_URL}/planets`,
+					{
+						method: 'GET'
+					}
+				)
+
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+					return;
 				}
+
+				const data = await response.json()
+				console.log(data.results)
+				setStore({ planetList: data.results })
 			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
+			getDetailsPlanet: async (url, uid) => {
+				const response = await fetch(url,
+					{
+						method: 'GET'
+					}
+				)
 
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
+				if (!response.ok) {
+					console.log('Dont found deails', response.status, response.statusText);
+				}
 
-				//reset the global store
-				setStore({ demo: demo });
-			}
-		}
-	};
+				const data = await response.json()
+				setStore({ currentPlanet: {...data.result.properties, uid} })
+
+			},
+			getStarships: async () => {
+				const response = await fetch(`${process.env.API_URL}/starships`,
+					{
+						method: 'GET'
+					}
+				)
+
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+					return;
+				}
+
+				const data = await response.json()
+				console.log(data.results)
+				setStore({ starshipsList: data.results })
+			},
+			getDetailsStarship: async (url, uid) => {
+				const response = await fetch(url,
+					{
+						method: 'GET'
+					}
+				)
+
+				if (!response.ok) {
+					console.log('Dont found deails', response.status, response.statusText);
+				}
+
+				const data = await response.json()
+				setStore({ currentStarship: {...data.result.properties, uid} })
+
+			},
+		},
+	}
 };
 
 export default getState;
