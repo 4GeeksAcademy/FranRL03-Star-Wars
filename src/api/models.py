@@ -75,32 +75,40 @@ class Posts(db.Model):
     body = db.Column(db.String)
     date = db.Column(db.DateTime)
     image_url = db.Column(db.String)
-    user_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('post_user'), lazy='select')
 
 class Comments(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String)
-    user_id = db.Column(db.Integer)
-    post_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('comments', lazy='select'))
+    post_to = db.relationship('Posts', foreign_keys=[post_id], backref=db.backref('comments', lazy='select'))
 
 class Medias(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.Enum('image', 'video', name='media_type'))
     url = db.Column(db.String)
-    post_id = db.Column(db.Integer)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+    post_to = db.relationship('Posts', foreign_keys=[post_id], backref=db.backref('medias', lazy='select'))
 
 
 class CharacterFavorites(db.Model):
     __tablename__ = 'character_favorites'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)
-    character_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    character_id = db.Column(db.Integer, db.ForeignKey('characters.id'))
+    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('character_favorites', lazy='select'))
+    character_to = db.relationship('Characters', foreign_keys=[character_id], backref=db.backref('favorited_by_users', lazy='select'))
 
 class PlanetFavorites(db.Model):
     __tablename__ = 'planet_favorites'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)
-    planet_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    planet_id = db.Column(db.Integer, db.ForeignKey('planets.id'))
+    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('planet_favorites', lazy='select'))
+    planet_to = db.relationship('Planets', foreign_keys=[planet_id], backref=db.backref('favorited_by_users', lazy='select'))
 
 class Characters(db.Model):
     id = db.Column(db.Integer, primary_key=True)
