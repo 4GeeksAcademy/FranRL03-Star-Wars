@@ -32,6 +32,12 @@ class Products(db.Model):
 
     def __repr__(self):
         return f'<Product: {self.id} - {self.name}>'
+    
+    def serialize(self):
+        return {'id': self.id,
+                'name': self.name,
+                'description': self.description,
+                'price': self.price}
 
 class Bills(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -92,7 +98,6 @@ class Medias(db.Model):
     url = db.Column(db.String)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
     post_to = db.relationship('Posts', foreign_keys=[post_id], backref=db.backref('medias', lazy='select'))
-
 
 class CharacterFavorites(db.Model):
     __tablename__ = 'character_favorites'
