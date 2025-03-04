@@ -4,7 +4,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
-from api.models import Characters, Planets, Products, db, Users
+from api.models import CharacterFavorites, Characters, PlanetFavorites, Planets, Products, db, Users
 
 
 api = Blueprint('api', __name__)
@@ -195,3 +195,53 @@ def planets_id(id):
         response_body['message'] = f"Delete planet with id {id}"
         response_body['results'] = {}
         return response_body, 200
+
+@api.route('/favorites/<int:user_id>', methods=['GET'])
+def favorites(user_id):
+    response_body = {}
+            
+    character_favorites = db.session.execute(
+        db.select(Characters)
+        .join(CharacterFavorites, Characters.id == CharacterFavorites.character_id)
+        .where(CharacterFavorites.user_id == user_id)
+    ).scalars()
+
+        
+    planet_favorites = db.session.execute(
+        db.select(Planets)
+        .join(PlanetFavorites, Planets.id == PlanetFavorites.planet_id)
+        .where(PlanetFavorites.user_id == user_id)
+    ).scalars()
+
+    response_body["favorite_characters"] = [char.serialize() for char in character_favorites]
+    response_body["favorite_planets"] = [planet.serialize() for planet in planet_favorites]
+    return response_body, 200
+
+@api.route('/favorites/<int:user_id>/planets', methods=['POST'])
+def add_favorite_planet(user_id):
+    response_body = {}
+    data = request.json
+
+    planet_id = data.get("planet_id")
+
+    new_favorite = PlanetFavorites(user_id=user_id, planet_id=planet_id)
+    db.session.add(new_favorite)
+    db.session.commit()
+    response_body['message'] = "Planet add"
+    return response_body, 200
+
+@api.route('/favorites/<int:user_id>/planets/<int:planet_id>', methods=['DELETE'])
+def delete_favorite_planet(user_id, planet_id):
+    response_body = {}
+    planet = db.session.execute(
+        db.select(PlanetFavorites).where(
+            PlanetFavorites.user_id == user_id,
+            PlanetFavorites.planet_id == planet_id
+        )
+    ).scalar()
+
+    db.session.delete(planet)
+    db.session.commit()
+
+    response_body['message'] = "Planet delete"
+    return response_body, 200
