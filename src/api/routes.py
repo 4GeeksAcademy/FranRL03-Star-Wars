@@ -245,3 +245,32 @@ def delete_favorite_planet(user_id, planet_id):
 
     response_body['message'] = "Planet delete"
     return response_body, 200
+
+@api.route('/favorites/<int:user_id>/characters', methods=['POST'])
+def add_favorite_character(user_id):
+    response_body = {}
+    data = request.json
+
+    character_id = data.get("character_id")
+
+    new_favorite = CharacterFavorites(user_id=user_id, character_id=character_id)
+    db.session.add(new_favorite)
+    db.session.commit()
+    response_body['message'] = "Character add"
+    return response_body,200
+
+@api.route('/favorites/<int:user_id>/characters/<int:character_id>', methods=['DELETE'])
+def delete_favorite_character(user_id, character_id):
+    response_body = {}
+    character = db.session.execute(
+        db.select(CharacterFavorites).where(
+            CharacterFavorites.user_id == user_id,
+            CharacterFavorites.character_id == character_id
+        )
+    ).scalar()
+
+    db.session.delete(character)
+    db.session.commit()
+
+    response_body['message'] = "Character delete"
+    return response_body, 200
