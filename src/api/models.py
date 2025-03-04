@@ -118,21 +118,43 @@ class PlanetFavorites(db.Model):
 class Characters(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    height = db.Column(db.String)
-    mass = db.Column(db.String)
+    height = db.Column(db.Integer)
+    mass = db.Column(db.Integer)
     hair_color = db.Column(db.String)
     skin_color = db.Column(db.String)
     eye_color = db.Column(db.String)
     birth_year = db.Column(db.String)
     gender = db.Column(db.String)
 
+    def serialize(self):
+        return {'id': self.id,
+                'name': self.name,
+                'height': self.height,
+                'mass': self.mass,
+                'hair_color': self.hair_color,
+                'skin_color': self.skin_color,
+                'eye_color': self.eye_color,
+                'birth_year': self.birth_year,
+                'gender': self.gender}
+
 class Planets(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    diameter = db.Column(db.String)
-    rotation_period = db.Column(db.String)
-    orbital_period = db.Column(db.String)
-    gravity = db.Column(db.String)
-    population = db.Column(db.String)
+    diameter = db.Column(db.Integer)
+    rotation_period = db.Column(db.Integer)
+    orbital_period = db.Column(db.Integer)
+    gravity = db.Column(db.Integer)
+    population = db.Column(db.Integer)
     climate = db.Column(db.String)
     terrain = db.Column(db.String)
+
+    def serialize(self):
+        return {'id': self.id,
+                'name': self.name,
+                'diameter': self.diameter,
+                'rotation_period': self.rotation_period,
+                'orbital_period': self.orbital_period,
+                'gravity': self.gravity,
+                'population': self.population,
+                'climate': self.climate,
+                'terrain': self.terrain}
