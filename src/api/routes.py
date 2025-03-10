@@ -5,6 +5,10 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from api.models import CharacterFavorites, Characters, PlanetFavorites, Planets, Products, db, Users
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import get_jwt
 
 
 api = Blueprint('api', __name__)
@@ -32,6 +36,43 @@ def users():
     response_body['message'] = f"List of users"
     response_body['results'] = results
     return response_body, 200
+
+
+# Create a route to authenticate your users and return JWTs. The
+# create_access_token() function is used to actually generate the JWT.
+@api.route("/login", methods=["POST"])
+def login():
+    response_body = {}
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+    row = db.session.execute(db.select(Users).where(Users.email == email, Users.password == password, Users.is_active)).scalar()
+    # Si la consulta es exitosa, row tendra algo, si esta vacio devolvera None
+    if not row:
+        response_body['message'] = "Bad username or password"
+        return response_body, 401
+    user = row.serialize()
+    claims = {'user_id': user['id'],
+              'is_admin': user['is_admin']}
+    print(claims)       
+
+    access_token = create_access_token(identity=email, additional_claims=claims)
+    response_body['message'] = "User logged!"
+    response_body['access_token'] = access_token
+    return response_body, 200
+
+
+# Protect a route with jwt_required, which will kick out requests
+# without a valid JWT present.
+@api.route("/protected", methods=["GET"])
+@jwt_required()
+def protected():
+    # Access the identity of the current user with get_jwt_identity
+    response_body = {}
+    current_user = get_jwt_identity()
+    additional_claims = get_jwt()
+    response_body['message'] = f'User logged: {current_user} - {additional_claims}'
+    return response_body, 200
+
 
 @api.route('/products', methods=['GET', 'POST'])
 def products():
@@ -66,6 +107,10 @@ def product_id(id):
         response_body['result'] = row.serialize()
         return response_body, 200
     if request.method == 'PUT':
+        additional_claims = get_jwt()
+        if not additional_claims['id_admin']:
+            response_body['message'] = 'You are not admin'
+            return response_body, 401
         data = request.json
         row.name = data.get("name", row.name)
         row.description = data.get("description", row.description )
@@ -80,6 +125,7 @@ def product_id(id):
         response_body['message'] = f"Delete product with id {id}"
         response_body['result'] = {}
         return response_body, 200
+
 
 @api.route('/characters', methods=['GET', 'POST'])
 def characters():
@@ -104,7 +150,8 @@ def characters():
         response_body['message'] = 'Product created successfully'
         response_body['results'] = character.serialize()
         return response_body, 200
-    
+
+
 @api.route('/characters/<int:id>', methods=['GET', 'PUT', 'DELETE'])
 def character_id(id):
     response_body = {}
@@ -136,7 +183,8 @@ def character_id(id):
         response_body['message'] = f"Delete character with id {id}"
         response_body['results'] = {}
         return response_body, 200
-    
+
+
 @api.route('/planets', methods=['GET', 'POST'])
 def planets():
     response_body = {}
@@ -160,6 +208,7 @@ def planets():
         response_body['message'] = "Planet created successfully"
         response_body['results'] = planet.serialize()
         return response_body, 200
+
 
 @api.route('/planets/<int:id>', methods=['GET', 'PUT', 'DELETE'])
 def planets_id(id):
@@ -196,6 +245,7 @@ def planets_id(id):
         response_body['results'] = {}
         return response_body, 200
 
+
 @api.route('/favorites/<int:user_id>', methods=['GET'])
 def favorites(user_id):
     response_body = {}
@@ -217,6 +267,7 @@ def favorites(user_id):
     response_body["favorite_planets"] = [planet.serialize() for planet in planet_favorites]
     return response_body, 200
 
+
 @api.route('/favorites/<int:user_id>/planets', methods=['POST'])
 def add_favorite_planet(user_id):
     response_body = {}
@@ -229,6 +280,7 @@ def add_favorite_planet(user_id):
     db.session.commit()
     response_body['message'] = "Planet add"
     return response_body, 200
+
 
 @api.route('/favorites/<int:user_id>/planets/<int:planet_id>', methods=['DELETE'])
 def delete_favorite_planet(user_id, planet_id):
@@ -246,6 +298,7 @@ def delete_favorite_planet(user_id, planet_id):
     response_body['message'] = "Planet delete"
     return response_body, 200
 
+
 @api.route('/favorites/<int:user_id>/characters', methods=['POST'])
 def add_favorite_character(user_id):
     response_body = {}
@@ -258,6 +311,7 @@ def add_favorite_character(user_id):
     db.session.commit()
     response_body['message'] = "Character add"
     return response_body,200
+
 
 @api.route('/favorites/<int:user_id>/characters/<int:character_id>', methods=['DELETE'])
 def delete_favorite_character(user_id, character_id):

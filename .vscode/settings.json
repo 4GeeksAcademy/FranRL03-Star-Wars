@@ -12,5 +12,6 @@
     },
     "[css]": {
         "editor.defaultFormatter": "vscode.css-language-features"
-    }
+    },
+    "python.REPL.enableREPLSmartSend": false
 }
