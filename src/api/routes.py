@@ -48,7 +48,8 @@ def login():
     row = db.session.execute(db.select(Users).where(Users.email == email, Users.password == password, Users.is_active)).scalar()
     # Si la consulta es exitosa, row tendra algo, si esta vacio devolvera None
     if not row:
-        response_body['message'] = "Bad username or password"
+        print(row)
+        response_body['message'] = "Bad email or password"
         return response_body, 401
     user = row.serialize()
     claims = {'user_id': user['id'],
@@ -56,8 +57,9 @@ def login():
     print(claims)       
 
     access_token = create_access_token(identity=email, additional_claims=claims)
-    response_body['message'] = "User logged!"
+    response_body['message'] = f'User {user["first_name"]} logged!'
     response_body['access_token'] = access_token
+    response_body['result'] = user
     return response_body, 200
 
 
@@ -96,6 +98,7 @@ def products():
     
 
 @api.route('/products/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+@jwt_required()
 def product_id(id):
     response_body = {}
     row = db.session.execute(db.select(Products).where(Products.id == id)).scalar()
@@ -108,7 +111,7 @@ def product_id(id):
         return response_body, 200
     if request.method == 'PUT':
         additional_claims = get_jwt()
-        if not additional_claims['id_admin']:
+        if not additional_claims['is_admin']:
             response_body['message'] = 'You are not admin'
             return response_body, 401
         data = request.json

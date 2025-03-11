@@ -1,5 +1,5 @@
 import React, { useActionState, useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 import logoStarWars from "../../img/logoStarWars.png";
 
@@ -8,6 +8,8 @@ export const Navbar = () => {
 	const { store, actions } = useContext(Context);
 	const [ isDarkTheme, setIsDarkTheme] = useState(true);
 
+	const navigate = useNavigate()
+
 	const handleThemeChange = () => {
 		const theme = isDarkTheme ? 'flatly' : 'superhero';
 		setIsDarkTheme(!isDarkTheme)
@@ -15,6 +17,14 @@ export const Navbar = () => {
 
 		const themeStylesheet = document.getElementById("theme-stylesheet");
         themeStylesheet.href = `https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/${theme}/bootstrap.min.css`;
+	}
+
+	const handleAccess = () => {
+		if (store.isLogged) {
+			actions.logout();
+		} else {
+			navigate('/login');
+		}
 	}
 
 	return (
@@ -37,6 +47,9 @@ export const Navbar = () => {
 						</li>
 						<li className="nav-item">
 							<Link className="nav-link" to="/starship">Starships</Link>
+						</li>
+						<li className="nav-item">
+							<Link className="nav-link" to="/products">Products</Link>
 						</li>
 					</ul>
 				</div>
@@ -71,6 +84,7 @@ export const Navbar = () => {
 						}
 					</ul>
 				</div>
+				<button onClick={handleAccess} type="button" className="btn btn-primary me-4 rounded-4">{store.isLogged ? 'Logout' : 'Login'}</button>
 			</div>
 		</nav >
 	);

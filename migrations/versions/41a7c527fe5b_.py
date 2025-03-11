@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 1f936d015045
-Revises: d5a33fb9859f
-Create Date: 2025-03-03 17:42:17.222183
+Revision ID: 41a7c527fe5b
+Revises: 
+Create Date: 2025-03-10 17:33:15.516753
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '1f936d015045'
-down_revision = 'd5a33fb9859f'
+revision = '41a7c527fe5b'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -21,8 +21,8 @@ def upgrade():
     op.create_table('characters',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
-    sa.Column('height', sa.String(), nullable=True),
-    sa.Column('mass', sa.String(), nullable=True),
+    sa.Column('height', sa.Integer(), nullable=True),
+    sa.Column('mass', sa.Integer(), nullable=True),
     sa.Column('hair_color', sa.String(), nullable=True),
     sa.Column('skin_color', sa.String(), nullable=True),
     sa.Column('eye_color', sa.String(), nullable=True),
@@ -33,13 +33,43 @@ def upgrade():
     op.create_table('planets',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
-    sa.Column('diameter', sa.String(), nullable=True),
-    sa.Column('rotation_period', sa.String(), nullable=True),
-    sa.Column('orbital_period', sa.String(), nullable=True),
-    sa.Column('gravity', sa.String(), nullable=True),
-    sa.Column('population', sa.String(), nullable=True),
+    sa.Column('diameter', sa.Integer(), nullable=True),
+    sa.Column('rotation_period', sa.Integer(), nullable=True),
+    sa.Column('orbital_period', sa.Integer(), nullable=True),
+    sa.Column('gravity', sa.Integer(), nullable=True),
+    sa.Column('population', sa.Integer(), nullable=True),
     sa.Column('climate', sa.String(), nullable=True),
     sa.Column('terrain', sa.String(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('products',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('price', sa.Float(), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
+    )
+    op.create_table('users',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('email', sa.String(length=120), nullable=False),
+    sa.Column('password', sa.String(length=80), nullable=False),
+    sa.Column('is_active', sa.Boolean(), nullable=False),
+    sa.Column('is_admin', sa.Boolean(), nullable=False),
+    sa.Column('first_name', sa.String(), nullable=True),
+    sa.Column('last_name', sa.String(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('email')
+    )
+    op.create_table('bills',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('create_at', sa.DateTime(), nullable=True),
+    sa.Column('total', sa.Float(), nullable=False),
+    sa.Column('bill_adress', sa.String(), nullable=True),
+    sa.Column('status', sa.Enum('pending', 'paid', 'cancel', name='status'), nullable=False),
+    sa.Column('payment', sa.Enum('visa', 'amex', 'paypal', name='payment'), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('character_favorites',
@@ -48,6 +78,14 @@ def upgrade():
     sa.Column('character_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['character_id'], ['characters.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('followers',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('following_id', sa.Integer(), nullable=True),
+    sa.Column('follower_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['follower_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['following_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('planet_favorites',
@@ -69,6 +107,17 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('bill_items',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('price_per_unit', sa.Float(), nullable=False),
+    sa.Column('quantity', sa.Integer(), nullable=False),
+    sa.Column('total_price', sa.Float(), nullable=False),
+    sa.Column('bill_id', sa.Integer(), nullable=True),
+    sa.Column('product_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['bill_id'], ['bills.id'], ),
+    sa.ForeignKeyConstraint(['product_id'], ['products.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('comments',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('body', sa.String(), nullable=True),
@@ -86,24 +135,21 @@ def upgrade():
     sa.ForeignKeyConstraint(['post_id'], ['posts.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('followers', schema=None) as batch_op:
-        batch_op.create_foreign_key(None, 'users', ['following_id'], ['id'])
-        batch_op.create_foreign_key(None, 'users', ['follower_id'], ['id'])
-
     # ### end Alembic commands ###
 
 
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
-    with op.batch_alter_table('followers', schema=None) as batch_op:
-        batch_op.drop_constraint(None, type_='foreignkey')
-        batch_op.drop_constraint(None, type_='foreignkey')
-
     op.drop_table('medias')
     op.drop_table('comments')
+    op.drop_table('bill_items')
     op.drop_table('posts')
     op.drop_table('planet_favorites')
+    op.drop_table('followers')
     op.drop_table('character_favorites')
+    op.drop_table('bills')
+    op.drop_table('users')
+    op.drop_table('products')
     op.drop_table('planets')
     op.drop_table('characters')
     # ### end Alembic commands ###

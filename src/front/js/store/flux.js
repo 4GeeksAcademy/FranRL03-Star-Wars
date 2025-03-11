@@ -18,10 +18,60 @@ const getState = ({ getStore, getActions, setStore }) => {
 			currentPlanet: {},
 			starshipsList: [],
 			currentStarship: {},
-			theme: "superhero"
+			user: '',
+			isLogged: false,
+			isAdmin: false,
+			theme: "superhero",
+			alert: {text: '', visible: false, background: 'primary'},
 		},
 		actions: {
 			setTheme: (themeName) => { setStore({ theme: themeName }) },
+			setAlert: (alert) => {setStore({alert: alert})},
+			isUserLogged: () => {
+				const data = JSON.parse(localStorage.getItem('user'));
+				if (data) {
+					setStore({ 
+						isLogged: true, 
+						isAdmin: data.is_admin, 
+						user: data.first_name,
+					})
+				}
+			},
+			login: async (userLogin) => {
+				const response = await fetch(`${process.env.BACKEND_URL}/api/login`,
+					{
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(userLogin),
+					}
+				)
+				
+				if (!response.ok) {
+					console.log('Error for loggin', response.status, response.statusText)
+				}
+				
+				const data = await response.json()
+				console.log(data)
+
+				setStore({ 
+					isLogged: true, 
+					isAdmin: data.result.is_admin, 
+					user: data.result.first_name,
+					alert: {text: data.message, visible: true, background: 'success'},
+				})
+				localStorage.setItem('token', data.access_token)
+				localStorage.setItem('user', JSON.stringify(data.result))
+			},
+			logout: () => {
+				localStorage.removeItem('token');
+				localStorage.removeItem('user')
+				getActions().setAlert({text: '', visible: false, background: 'primary'})
+				setStore({
+					user: '',
+					isLogged: false,
+					isAdmin: false
+				})
+			},
 			getContact: async () => {
 				const response = await fetch(`${process.env.BASE_URL}/fran`,
 					{
@@ -219,6 +269,45 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const data = await response.json()
 				setStore({ currentStarship: {...data.result.properties, uid} })
 
+			},
+			getOneProduct: async (productId) => {
+				const token = localStorage.getItem('token')
+				const response = await fetch(`${process.env.BACKEND_URL}/api/products/${productId}`,
+					{
+						method: 'GET',
+						headers: {
+							Authorization: `Bearer ${token}`
+						}
+					}
+				)
+				
+				if (!response.ok) {
+					console.log('Error for get product', response.status, response.statusText)
+				}
+
+				const data = response.json()
+				console.log(data)
+
+			},
+			updateProduct: async (productId, updateProduct) => {
+				const token = localStorage.getItem('token')
+				const response = await fetch(`${process.env.BACKEND_URL}/api/products/${productId}`,
+					{
+						method: 'PUT',
+						headers: {
+							Authorization: `Bearer ${token}`,
+							'Content-Type' : 'application/json'
+						},
+						body: JSON.stringify(updateProduct)
+					}
+				)
+				
+				if (!response.ok) {
+					console.log('Error for get product', response.status, response.statusText)
+				}
+
+				const data = response.json()
+				console.log(data)
 			},
 		},
 	}

@@ -17,6 +17,8 @@ import { Planets } from "./pages/Planets.jsx";
 import { PlanetDetails } from "./pages/PlanetDetails.jsx";
 import { Starships } from "./pages/Starships.jsx";
 import { StarshipDetails } from "./pages/StarshipDetails.jsx";
+import { Login } from "./pages/Login.jsx";
+import { Products } from "./pages/Products.jsx";
 
 
 
@@ -35,6 +37,7 @@ const Layout = () => {
                 <ScrollToTop>
                     <Navbar />
                     <Routes>
+                        <Route element={<Login />} path="/login" />
                         <Route element={<Home />} path="/" />
                         <Route element={<Contact />} path="/contact" />
                         <Route element={<EditContact />} path="/edit-contact" />
@@ -44,6 +47,7 @@ const Layout = () => {
                         <Route element={<PlanetDetails />} path="/planet/:id" />
                         <Route element={<Starships />} path="/starship" />
                         <Route element={<StarshipDetails />} path="/starship/:id" />
+                        <Route element={<Products />} path="/products" />
                         <Route element={<h1>Not found!</h1>} path="*"/>
                     </Routes>
                     <Footer />
