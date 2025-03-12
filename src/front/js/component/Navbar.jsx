@@ -1,4 +1,4 @@
-import React, { useActionState, useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 import logoStarWars from "../../img/logoStarWars.png";
@@ -85,8 +85,8 @@ export const Navbar = () => {
 					</ul>
 				</div>
 				<div className="me-4">
-				<button onClick={handleAccess} type="button" className="btn btn-primary me-2 rounded-4">{store.isLogged ? 'Logout' : 'Login'}</button>
-				{!store.isLogged && (<Link to="/register" className="btn btn-secondary rounded-4">Register</Link>)}
+				<button onClick={handleAccess} type="button" className="btn btn-primary me-2 rounded-4">{store.isLogged ? 'Log out' : 'Login'}</button>
+				{!store.isLogged ? (<Link to="/register" className="btn btn-secondary rounded-4">Register</Link>) : (<Link to="/profile" className="btn btn-secondary rounded-4">My Profile</Link>)}
 				</div>
 			</div>
 		</nav >
