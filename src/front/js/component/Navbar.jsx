@@ -6,7 +6,7 @@ import logoStarWars from "../../img/logoStarWars.png";
 export const Navbar = () => {
 
 	const { store, actions } = useContext(Context);
-	const [ isDarkTheme, setIsDarkTheme] = useState(true);
+	const [isDarkTheme, setIsDarkTheme] = useState(true);
 
 	const navigate = useNavigate()
 
@@ -16,7 +16,7 @@ export const Navbar = () => {
 		actions.setTheme(theme)
 
 		const themeStylesheet = document.getElementById("theme-stylesheet");
-        themeStylesheet.href = `https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/${theme}/bootstrap.min.css`;
+		themeStylesheet.href = `https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/${theme}/bootstrap.min.css`;
 	}
 
 	const handleAccess = () => {
@@ -54,13 +54,13 @@ export const Navbar = () => {
 					</ul>
 				</div>
 				<div className="me-3">
-                    <button 
-                        className="btn btn-outline-light border-0" 
-                        onClick={(handleThemeChange)}
-						>
-                        <i className={`fa ${isDarkTheme ? "fa-sun" : "fa-moon"}`}></i>
-                    </button>
-                </div>
+					<button
+						className="btn btn-outline-light border-0"
+						onClick={(handleThemeChange)}
+					>
+						<i className={`fa ${isDarkTheme ? "fa-sun" : "fa-moon"}`}></i>
+					</button>
+				</div>
 				<div className="btn-group me-5">
 					<button type="button" className={`btn btn-warning dropdown-toggle me-2 ${isDarkTheme ? 'text-secondary' : 'text-light'} rounded-4`} data-bs-toggle="dropdown" aria-expanded="false">
 						Favorites
@@ -84,7 +84,10 @@ export const Navbar = () => {
 						}
 					</ul>
 				</div>
-				<button onClick={handleAccess} type="button" className="btn btn-primary me-4 rounded-4">{store.isLogged ? 'Logout' : 'Login'}</button>
+				<div className="me-4">
+				<button onClick={handleAccess} type="button" className="btn btn-primary me-2 rounded-4">{store.isLogged ? 'Logout' : 'Login'}</button>
+				{!store.isLogged && (<Link to="/register" className="btn btn-secondary rounded-4">Register</Link>)}
+				</div>
 			</div>
 		</nav >
 	);

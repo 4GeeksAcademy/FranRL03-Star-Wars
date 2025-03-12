@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
 
-    const {store, actions} = useContext(Context);
+    const { actions } = useContext(Context);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -35,7 +35,7 @@ export const Login = () => {
                     <label htmlFor="password" className="form-label">Password</label>
                     <input type="password" className="form-control" id="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
                 </div>
-                <button type="submit" className="btn btn-primary rounded-4">Primary</button>
+                <button type="submit" className="btn btn-primary rounded-4">Login</button>
             </form>
         </div>
     )

@@ -72,6 +72,28 @@ const getState = ({ getStore, getActions, setStore }) => {
 					isAdmin: false
 				})
 			},
+			register: async (newUser) => {
+				const response = await fetch(`${process.env.BACKEND_URL}/api/register`, 
+					{
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(newUser)
+					})
+
+				if (!response.ok)
+					console.log('Error for register', response.status, response.statusText)
+
+				const data = await response.json()
+				console.log(data)
+				setStore({ 
+					isLogged: true, 
+					isAdmin: data.result.is_admin, 
+					user: data.result.first_name,
+					alert: {text: data.message, visible: true, background: 'success'},
+				})
+				localStorage.setItem('token', data.access_token)
+				localStorage.setItem('user', JSON.stringify(data.result))
+			},
 			getContact: async () => {
 				const response = await fetch(`${process.env.BASE_URL}/fran`,
 					{

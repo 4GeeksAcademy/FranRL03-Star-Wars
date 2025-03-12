@@ -15,13 +15,6 @@ api = Blueprint('api', __name__)
 CORS(api) # Allow CORS requests to this API
 
 
-@api.route('/hello', methods=['POST', 'GET'])
-def handle_hello():
-    response_body = {}
-    response_body["message"] = "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-    return response_body, 200
-
-
 @api.route('/users', methods=['GET'])
 def users():
     response_body = {}
@@ -62,6 +55,28 @@ def login():
     response_body['result'] = user
     return response_body, 200
 
+
+@api.route("/register", methods=['POST'])
+def register():
+    response_body = {}
+    data = request.json
+    row = Users(email=data["email"],
+                    password=data['password'],
+                    is_active=data.get('is_active', True),
+                    is_admin=data.get('is_admin', False),
+                    first_name=data.get('first_name', ''),
+                    last_name=data.get('last_name', ''))
+    db.session.add(row)
+    db.session.commit()
+    newUser = row.serialize()
+    claims = {'user_id': newUser['id'],
+              'is_admin': newUser['is_admin']}
+    
+    access_token = create_access_token(identity=newUser["email"], additional_claims=claims)
+    response_body['message'] = f"Register successfully"
+    response_body['access_token'] = access_token
+    response_body['result'] = newUser
+    return response_body, 200
 
 # Protect a route with jwt_required, which will kick out requests
 # without a valid JWT present.

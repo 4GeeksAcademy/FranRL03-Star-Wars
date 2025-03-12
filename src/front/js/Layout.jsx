@@ -19,6 +19,8 @@ import { Starships } from "./pages/Starships.jsx";
 import { StarshipDetails } from "./pages/StarshipDetails.jsx";
 import { Login } from "./pages/Login.jsx";
 import { Products } from "./pages/Products.jsx";
+import { Register } from "./pages/Register.jsx";
+import { Profile } from "./pages/Profile.jsx";
 
 
 
@@ -38,6 +40,8 @@ const Layout = () => {
                     <Navbar />
                     <Routes>
                         <Route element={<Login />} path="/login" />
+                        <Route element={<Register />} path="/register" />
+                        <Route element={<Profile />} path="/profile" />
                         <Route element={<Home />} path="/" />
                         <Route element={<Contact />} path="/contact" />
                         <Route element={<EditContact />} path="/edit-contact" />
