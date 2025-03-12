@@ -6,6 +6,7 @@ import { Context } from "../store/appContext";
 export const Profile = () => {
 
     const { store, actions } = useContext(Context);
+    const user = store.user
     const navigate = useNavigate()
 
     const handleAccess = () => {
@@ -14,9 +15,6 @@ export const Profile = () => {
             navigate('/')
         }
     }
-
-    const user = JSON.parse(localStorage.getItem("user"));
-    // Cargar el usuario desde localStorage cuando se monta el componente
 
     return (
         user ?
@@ -30,12 +28,12 @@ export const Profile = () => {
                                     <h3>My Profile</h3>
                                 </div>
                                 <div class="card-body text-center">
-                                    <h4 id="nombre">Nombre: {user.first_name.trim() === '' ? (<span className="text-light">empty</span>) : (<span className="text-primary">{user.first_name}</span>)}</h4>
-                                    <h4 id="apellido">Apellido: {user.last_name.trim() === '' ? (<span className="text-light">empty</span>) : (<span className="text-primary">{user.last_name}</span>)}</h4>
+                                    <h4 id="nombre">Nombre: <span className="text-primary">{user.first_name}</span></h4>
+                                    <h4 id="apellido">Apellido: <span className="text-primary">{user.last_name}</span></h4>
                                     <h5 id="email">Email: <span className="text-primary">{user.email}</span></h5>
                                 </div>
                                 <div class="card-footer text-center">
-                                    <button class="btn btn-primary me-2">Edit profile</button>
+                                    <button class="btn btn-primary me-2" onClick={() => navigate("/edit-profile")}>Edit profile</button>
                                     <button class="btn btn-danger" onClick={handleAccess}>Log out</button>
                                 </div>
                             </div>

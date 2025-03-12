@@ -18,7 +18,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			currentPlanet: {},
 			starshipsList: [],
 			currentStarship: {},
-			user: '',
+			user: {},
 			isLogged: false,
 			isAdmin: false,
 			theme: "superhero",
@@ -56,7 +56,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ 
 					isLogged: true, 
 					isAdmin: data.result.is_admin, 
-					user: data.result.first_name,
+					user: data.result,
 					alert: {text: data.message, visible: true, background: 'success'},
 				})
 				localStorage.setItem('token', data.access_token)
@@ -93,6 +93,29 @@ const getState = ({ getStore, getActions, setStore }) => {
 				})
 				localStorage.setItem('token', data.access_token)
 				localStorage.setItem('user', JSON.stringify(data.result))
+			},
+			editProfile: async (dataToSend) => {
+				const token = localStorage.getItem('token')
+				const response = await fetch(`${process.env.BACKEND_URL}/api/edit-profile`,
+					{
+						method: 'PUT',
+						headers: { 
+							Authorization: `Bearer ${token}`,
+							'Content-Type' : 'application/json' },
+						body: JSON.stringify(dataToSend)
+					}
+				)
+
+				if(!response.ok) {
+					console.log('Error for edit', response.status, response.statusText)
+				}
+
+				const data = await response.json()
+				setStore({
+					user: data.results
+				})
+				console.log("datos del flux", data)
+				localStorage.setItem('user', JSON.stringify(data.results))
 			},
 			getContact: async () => {
 				const response = await fetch(`${process.env.BASE_URL}/fran`,

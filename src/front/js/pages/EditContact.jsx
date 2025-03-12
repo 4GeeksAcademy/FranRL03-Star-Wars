@@ -28,7 +28,7 @@ export const EditContact = () => {
 
     return (
         <div className="container">
-            <h1 className="text-center">Edit Students</h1>
+            <h1 className="text-center">Edit Contact</h1>
             <form>
                 <div className="mb-3">
                     <label htmlFor="exampleInputEmail1" className="form-label">Name</label>

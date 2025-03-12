@@ -78,6 +78,26 @@ def register():
     response_body['result'] = newUser
     return response_body, 200
 
+
+@api.route('/edit-profile', methods=['PUT'])
+@jwt_required()
+def edit_profile():
+    response_body = {}
+    current_user_email = get_jwt_identity()
+
+    user = db.session.execute(db.select(Users).where(Users.email == current_user_email)).scalar()
+    data = request.json
+
+    user.email = data.get("email", user.email)
+    user.first_name = data.get("first_name", user.first_name)
+    user.last_name = data.get("last_name", user.last_name)
+    db.session.commit()
+
+    response_body['message'] = "Edit profile successfully"
+    response_body['results'] = user.serialize()
+    return response_body, 200
+
+
 # Protect a route with jwt_required, which will kick out requests
 # without a valid JWT present.
 @api.route("/protected", methods=["GET"])
